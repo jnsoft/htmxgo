@@ -38,11 +38,16 @@ func NewServer() *http.ServeMux {
 		CurrentTime: time.Now().Format("15:04:05"),
 	}
 
+	mux.HandleFunc("/favicon.ico", func(w http.ResponseWriter, r *http.Request) {
+		http.NotFound(w, r)
+	})
+
 	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		HandleHome(w, r, templates, &data)
 	})
 
 	return mux
+
 }
 
 func HandleHome(w http.ResponseWriter, r *http.Request, templates *Templates, data *models.IndexModel) {

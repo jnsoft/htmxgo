@@ -8,15 +8,19 @@ import (
 	"os/signal"
 	"time"
 
+	"github.com/jnsoft/htmxgo/src/logger"
 	"github.com/jnsoft/htmxgo/src/server"
 )
 
 func main() {
+	log.SetFlags(0) // Disable default flags
+	log.SetOutput(&logger.IsoLogWriter{})
+
 	mux := server.NewServer()
 	addr := ":8080"
 	srv := &http.Server{
 		Addr:    addr,
-		Handler: mux,
+		Handler: logger.LoggingMiddleware(mux),
 	}
 
 	go func() {
