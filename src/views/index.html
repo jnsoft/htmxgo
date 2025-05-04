@@ -6,6 +6,7 @@
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link rel="stylesheet" href="/static/css/style.css">
+        <script src="https://unpkg.com/htmx.org/dist/htmx.min.js"></script>
 </html>
 <body>
     <header>
@@ -13,12 +14,12 @@
     </header>
     <main>
         <p>This is the main content of the index page.</p>
-        {{block "content" .}}
+        <div id="count">
         Count: {{.Count}}
-        {{end}}
+        <button hx-post="/increment" hx-target="#count" hx-swap="innerHTML">Increment</button>
+        </div>
         <p>Current Date: {{.CurrentDate}}</p>
         <p>Current Time: {{.CurrentTime}}</p>
-        
     </main>
     <footer>
         <p>&copy; 2023 My Website</p>
