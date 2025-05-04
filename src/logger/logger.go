@@ -1,6 +1,7 @@
 package logger
 
 import (
+	"bytes"
 	"log"
 	"net/http"
 	"os"
@@ -31,5 +32,32 @@ func LoggingMiddleware(next http.Handler) http.Handler {
 		start := time.Now()
 		next.ServeHTTP(lrw, r)
 		log.Printf("%s %s %d %s", r.Method, r.URL.Path, lrw.statusCode, time.Since(start))
+	})
+}
+
+type extensiveLoggingResponseWriter struct {
+	http.ResponseWriter
+	statusCode int
+	body       *bytes.Buffer
+}
+
+func (lrw *extensiveLoggingResponseWriter) WriteHeader(code int) {
+	lrw.statusCode = code
+	lrw.ResponseWriter.WriteHeader(code)
+}
+
+func (lrw *extensiveLoggingResponseWriter) Write(p []byte) (int, error) {
+	lrw.body.Write(p)
+	return lrw.ResponseWriter.Write(p)
+}
+
+func ExtensiveLoggingMiddleware(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		log.Printf("Incoming Request: %s %s %s\nHeaders: %v\n", r.Method, r.URL.Path, r.Proto, r.Header)
+		lrw := &extensiveLoggingResponseWriter{ResponseWriter: w, statusCode: http.StatusOK, body: &bytes.Buffer{}}
+		start := time.Now()
+		next.ServeHTTP(lrw, r)
+		log.Printf("Outgoing Response: Status: %d\nHeaders: %v\nBody: %s\nDuration: %s\n",
+			lrw.statusCode, w.Header(), lrw.body.String(), time.Since(start))
 	})
 }

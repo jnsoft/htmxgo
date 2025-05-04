@@ -20,7 +20,7 @@ func main() {
 	addr := ":8080"
 	srv := &http.Server{
 		Addr:    addr,
-		Handler: logger.LoggingMiddleware(mux),
+		Handler: logger.ExtensiveLoggingMiddleware(mux),
 	}
 
 	go func() {
