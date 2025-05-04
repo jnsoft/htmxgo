@@ -1,0 +1,26 @@
+{{block "index" .}}
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>Index Page</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="/static/css/style.css">
+</html>
+<body>
+    <header>
+        <h1>Welcome to the Index Page</h1>
+    </header>
+    <main>
+        <p>This is the main content of the index page.</p>
+        {{block "content" .}}
+        Count: {{.Count}}
+        {{end}}
+        <p>Current Date: {{.CurrentDate}}</p>
+        <p>Current Time: {{.CurrentTime}}</p>
+        
+    </main>
+    <footer>
+        <p>&copy; 2023 My Website</p>
+    </footer>
+{{end}}
